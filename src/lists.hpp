@@ -1,3 +1,6 @@
+#ifndef LISTS_HPP
+#define LISTS_HPP
+
 #include <iostream>
 
 /*
@@ -34,16 +37,37 @@ namespace lists
 		using elements = list_element<T,end_element>;
 	};
 
+	// get list length by counting recursively
+	template<class List>
+	struct list_length {
+		static constexpr int value = list_length<typename List::tail>::value+1;
+	};
+
+	template<>
+	struct list_length<end_element> {
+		static constexpr int value = 0; // end recursion
+	};
+
+	// construct a list of length N by duplicating the same type
+	template<int N, class T>
+	struct make_list_from_type {
+		using type = list_element<T, typename make_list_from_type<N-1,T>::type>;
+	};
+
+	template<class T>
+	struct make_list_from_type<1,T> {
+		using type = list_element<T,end_element>; // end recursion
+	};
+
 	/*
 	 * Performs an operation on N lists. The lists must have the same length.
 	 * The operation is specified as a class template with a return typedef named
-	 * 'result'.
+	 * 'type'.
 	 */
 	template<template<class...> class Op, class... Lists>
 	struct operate {
-		using value = typename Op<typename Lists::value...>::result;
+		using value = typename Op<typename Lists::value...>::type;
 		using result = list_element<value,typename operate<Op, typename Lists::tail...>::result>;
-		//using result = list_element<value,typename Op<operate<Op,typename Lists::tail...>::value>::result>;
 	};
 
 	// end recursion - Note this is not perfect; it will stop only when the first list hits its end.
@@ -74,3 +98,5 @@ std::ostream& operator<<(std::ostream& out, const lists::static_list<Ts...>& lis
 {
 	return out << lists::static_list<Ts...>::lists::elements;
 }
+
+#endif /* LISTS_HPP */

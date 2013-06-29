@@ -1,22 +1,18 @@
-#include "rational.hpp"
+#include "lists.hpp"
 #include <cmath>
 #include <ratio>
 
 namespace dims {
 
-	using namespace rational;
+	using namespace lists;
 
 	// type representing the physical dimensions of a quantity
-	template< class M, class L, class T >
-	struct Dimension {
-		using mass = M;
-		using length = L;
-		using time = T;
-	};
+	template<class... Rs>
+	using Dimension = typename static_list<Rs...>::elements;
 
 	// convenience using-statement for generating dimensions with integer powers
-	template<int M, int L, int T>
-	using IntDim = Dimension<std::ratio<M>,std::ratio<L>,std::ratio<T>>;
+	template<int... Is>
+	using IntDim = Dimension<std::ratio<Is>...>;
 
 	// basic dimension typedefs
 	typedef IntDim<0,0,0>	number;
@@ -34,40 +30,37 @@ namespace dims {
 	// return a simplified ratio
 	template<class R>
 	struct ratio_simplify {
-		using result = std::ratio<R::num,R::den>;
+		using type = std::ratio<R::num,R::den>;
 	};
 
 	// operations for modifying dimensions
 	template< class Dim1, class Dim2 >
 	struct mult_Dimension {
-		using result = Dimension<
-					 typename ratio_simplify<typename std::ratio_add<typename Dim1::mass,	typename Dim2::mass>::type>::result,
-					 typename ratio_simplify<typename std::ratio_add<typename Dim1::length,	typename Dim2::length>::type>::result,
-					 typename ratio_simplify<typename std::ratio_add<typename Dim1::time,	typename Dim2::time>::type>::result
-					   >;
+		using result = typename operate<ratio_simplify,typename operate<std::ratio_add,Dim1,Dim2>::result>::result;
 	};
 
 	// raising a dimension to a rational power
-	template< class Dim1, class R1 >
+	template< class Dim, class R >
 	struct pow_Dimension {
-		using result = Dimension<
-					typename ratio_simplify<typename std::ratio_multiply<typename Dim1::mass,	R1>::type>::result,
-					typename ratio_simplify<typename std::ratio_multiply<typename Dim1::length,R1>::type>::result,
-					typename ratio_simplify<typename std::ratio_multiply<typename Dim1::time,	R1>::type>::result
-					   >;
-	};
-	// get the reciprocal of a dimension
-	template< class Dim1 >
-	struct inv_Dimension {
-		using result = Dimension<
-					typename ratio_simplify<std::ratio<-Dim1::mass::num,	Dim1::mass::den>>::result,
-					typename ratio_simplify<std::ratio<-Dim1::length::num,	Dim1::length::den>>::result,
-					typename ratio_simplify<std::ratio<-Dim1::time::num,	Dim1::time::den>>::result
-						>;
+		using _RList = typename make_list_from_type<list_length<Dim>::value,R>::type;
+		using result = typename operate<ratio_simplify,typename operate<std::ratio_multiply,Dim,_RList>::result>::result;
+
 	};
 
-	template< class Dim1 >
-	using sqrt_Dimension = pow_Dimension<Dim1,std::ratio<1,2>>;
+	// get the reciprocal of a dimension
+	template< class Dim >
+	struct inv_Dimension {
+		// negation operator
+		template< class R >
+		struct ratio_negate {
+			using type = std::ratio<-R::num,R::den>;
+		};
+
+		using result = typename operate<ratio_simplify,typename operate<ratio_negate,Dim>::result>::result;
+	};
+
+	template< class Dim >
+	using sqrt_Dimension = pow_Dimension<Dim,std::ratio<1,2>>;
 
 	/*
 	 * A wrapper for data which includes information about dimensions.

@@ -3,6 +3,7 @@
 #include "vect.hpp"
 #include "dims.hpp"
 #include "lists.hpp"
+#include "rational.hpp"
 
 using namespace std;
 using namespace dims;
@@ -33,7 +34,7 @@ int main(int argc, char* argv[])
 	 */
 
 	// add two rationals
-	add_Rational<Rational<1,2>,Rational<3,4>>::result res;
+	add_Rational<Rational<1,2>,Rational<3,4>>::type res;
 	cout << res << endl;
 
 	// check for a common factor
@@ -43,11 +44,11 @@ int main(int argc, char* argv[])
 	cout << highest_common_factor<10,5>::value << endl;
 
 	// simplify the result of the previous addition
-	rational::simplify<decltype(res)>::result simpl1;
+	rational::simplify<decltype(res)>::type simpl1;
 	cout << simpl1 << endl;
 
 	// simplify a negative rational
-	rational::simplify<Rational<-2,4>>::result simpl2;
+	rational::simplify<Rational<-2,4>>::type simpl2;
 	cout << simpl2 << endl;
 
 	/*

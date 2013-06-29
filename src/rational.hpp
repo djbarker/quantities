@@ -6,6 +6,8 @@
  * from <ratio>
  */
 
+#warning "Use std::ratio instead."
+
 namespace rational
 {
 
@@ -34,7 +36,7 @@ namespace rational
 		static const bool value = false;
 	};
 
-	template<int A, int B, int N, bool CF>
+	template<int,int,int,bool>
 	struct _hcf;
 
 	template<int A, int B, int N>
@@ -48,7 +50,7 @@ namespace rational
 	};
 
 	/*
-	 * Uses the hcf struct to find the highest common factor of two integers.
+	 * Find the highest common factor of two integers.
 	 */
 	template<int A, int B>
 	struct highest_common_factor {
@@ -68,7 +70,7 @@ namespace rational
 	 */
 	template<class R1>
 	struct simplify {
-		using result = Rational<
+		using type = Rational<
 								 R1::numerator / highest_common_factor<R1::numerator,R1::denominator>::value,
 								 R1::denominator / highest_common_factor<R1::numerator,R1::denominator>::value
 								>;
@@ -80,22 +82,22 @@ namespace rational
 
 	template< class R1, class R2>
 	struct add_Rational {
-		using result = Rational<R1::numerator*R2::denominator+R2::numerator*R1::denominator,R1::denominator*R2::denominator>;
+		using type = Rational<R1::numerator*R2::denominator+R2::numerator*R1::denominator,R1::denominator*R2::denominator>;
 	};
 
 	template< class R1, class R2>
 	struct sub_Rational {
-		using result = Rational<R1::numerator*R2::denominator-R2::numerator*R1::denominator,R1::denominator*R2::denominator>;
+		using type = Rational<R1::numerator*R2::denominator-R2::numerator*R1::denominator,R1::denominator*R2::denominator>;
 	};
 
 	template< class R1, class R2>
 	struct mult_Rational {
-		using result = Rational<R1::numerator*R2::numerator,R1::denominator*R2::denominator>;
+		using type = Rational<R1::numerator*R2::numerator,R1::denominator*R2::denominator>;
 	};
 
 	template< class R1, class R2>
 	struct div_Rational {
-		using result = Rational<R1::numerator*R2::denominator,R1::denominator*R2::numerator>;
+		using type = Rational<R1::numerator*R2::denominator,R1::denominator*R2::numerator>;
 	};
 
 }; // namespace rational
