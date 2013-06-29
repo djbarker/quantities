@@ -33,7 +33,7 @@ namespace dims {
 
 	// return a simplified ratio
 	template<class R>
-	struct simplify {
+	struct ratio_simplify {
 		using result = std::ratio<R::num,R::den>;
 	};
 
@@ -41,9 +41,9 @@ namespace dims {
 	template< class Dim1, class Dim2 >
 	struct mult_Dimension {
 		using result = Dimension<
-					 typename simplify<typename std::ratio_add<typename Dim1::mass,	typename Dim2::mass>::type>::result,
-					 typename simplify<typename std::ratio_add<typename Dim1::length,	typename Dim2::length>::type>::result,
-					 typename simplify<typename std::ratio_add<typename Dim1::time,	typename Dim2::time>::type>::result
+					 typename ratio_simplify<typename std::ratio_add<typename Dim1::mass,	typename Dim2::mass>::type>::result,
+					 typename ratio_simplify<typename std::ratio_add<typename Dim1::length,	typename Dim2::length>::type>::result,
+					 typename ratio_simplify<typename std::ratio_add<typename Dim1::time,	typename Dim2::time>::type>::result
 					   >;
 	};
 
@@ -51,18 +51,18 @@ namespace dims {
 	template< class Dim1, class R1 >
 	struct pow_Dimension {
 		using result = Dimension<
-					typename simplify<typename std::ratio_multiply<typename Dim1::mass,	R1>::type>::result,
-					typename simplify<typename std::ratio_multiply<typename Dim1::length,R1>::type>::result,
-					typename simplify<typename std::ratio_multiply<typename Dim1::time,	R1>::type>::result
+					typename ratio_simplify<typename std::ratio_multiply<typename Dim1::mass,	R1>::type>::result,
+					typename ratio_simplify<typename std::ratio_multiply<typename Dim1::length,R1>::type>::result,
+					typename ratio_simplify<typename std::ratio_multiply<typename Dim1::time,	R1>::type>::result
 					   >;
 	};
 	// get the reciprocal of a dimension
 	template< class Dim1 >
 	struct inv_Dimension {
 		using result = Dimension<
-					typename simplify<std::ratio<-Dim1::mass::num,	Dim1::mass::den>>::result,
-					typename simplify<std::ratio<-Dim1::length::num,	Dim1::length::den>>::result,
-					typename simplify<std::ratio<-Dim1::time::num,	Dim1::time::den>>::result
+					typename ratio_simplify<std::ratio<-Dim1::mass::num,	Dim1::mass::den>>::result,
+					typename ratio_simplify<std::ratio<-Dim1::length::num,	Dim1::length::den>>::result,
+					typename ratio_simplify<std::ratio<-Dim1::time::num,	Dim1::time::den>>::result
 						>;
 	};
 
