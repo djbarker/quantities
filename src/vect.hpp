@@ -1,3 +1,6 @@
+#ifndef VECT_HPP_
+#define VECT_HPP_
+
 #include <iostream>
 #include <memory>
 #include <array>
@@ -47,3 +50,5 @@ private:
 };
 
 using real3 = nvect<3,double>;
+
+#endif /* VECT_HPP_ */

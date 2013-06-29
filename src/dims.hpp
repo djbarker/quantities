@@ -1,3 +1,6 @@
+#ifndef DIMS_HPP_
+#define DIMS_HPP_
+
 #include "lists.hpp"
 #include <cmath>
 #include <ratio>
@@ -128,3 +131,5 @@ namespace dims {
 	}
 
 }; // namespace dims
+
+#endif /* DIMS_HPP_ */

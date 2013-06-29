@@ -1,3 +1,6 @@
+#ifndef RATIONAL_HPP_
+#define RATIONAL_HPP_
+
 #include <iostream>
 
 /*
@@ -107,3 +110,5 @@ std::ostream& operator<<(std::ostream& out, rational::Rational<A,B> R)
 {
 	return out << A << '/' << B;
 }
+
+#endif /* RATIONAL_HPP_ */
