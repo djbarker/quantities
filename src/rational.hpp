@@ -1,7 +1,9 @@
 #include <iostream>
 
 /*
- * Types for compile time rational number calculations
+ * Types for compile time rational number calculations. This is
+ * reinventing the wheel; really one should prefer std::ratio
+ * from <ratio>
  */
 
 namespace rational
@@ -11,12 +13,6 @@ namespace rational
 	struct Rational {
 		enum { numerator=A, denominator=B };
 	};
-
-	template<int A, int B>
-	std::ostream& operator<<(std::ostream& out, Rational<A,B> R)
-	{
-		return out << A << '/' << B;
-	}
 
 	/*
 	 * Operations needed for finding the HCF
@@ -39,16 +35,16 @@ namespace rational
 	};
 
 	template<int A, int B, int N, bool CF>
-	struct hcf;
+	struct _hcf;
 
 	template<int A, int B, int N>
-	struct hcf<A,B,N,true> {
+	struct _hcf<A,B,N,true> {
 		static const int value = N;
 	};
 
 	template<int A, int B, int N>
-	struct hcf<A,B,N,false> {
-		static const int value = hcf<A,B,N-1,is_common_factor<A,B,N-1>::value>::value;
+	struct _hcf<A,B,N,false> {
+		static const int value = _hcf<A,B,N-1,is_common_factor<A,B,N-1>::value>::value;
 	};
 
 	/*
@@ -58,7 +54,7 @@ namespace rational
 	struct highest_common_factor {
 		static const int _A = abs(A);
 		static const int _B = abs(B);
-		static const int value = hcf<_A,_B,static_min<_A,_B>::value,is_common_factor<_A,_B,static_min<_A,_B>::value>::value>::value;
+		static const int value = _hcf<_A,_B,static_min<_A,_B>::value,is_common_factor<_A,_B,static_min<_A,_B>::value>::value>::value;
 	};
 
 	// Handle zero such that when dividing by HCF 0/B becomes 0/1
@@ -103,3 +99,9 @@ namespace rational
 	};
 
 }; // namespace rational
+
+template<int A, int B>
+std::ostream& operator<<(std::ostream& out, rational::Rational<A,B> R)
+{
+	return out << A << '/' << B;
+}

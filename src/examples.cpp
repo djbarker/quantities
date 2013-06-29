@@ -2,13 +2,32 @@
 
 #include "vect.hpp"
 #include "dims.hpp"
+#include "lists.hpp"
 
 using namespace std;
 using namespace dims;
 using namespace rational;
+using namespace lists;
 
 int main(int argc, char* argv[])
 {
+
+	/*
+	 * Example of static lists
+	 */
+
+	// create two static lists
+	using list1 = static_list<Rational<1>,Rational<2>>::elements;
+	using list2 = static_list<Rational<2>,Rational<4>>::elements;
+
+	// print them
+	cout << list1() << endl;
+	cout << list2() << endl;
+
+	using plus12 = operate<add_Rational,list1,list2>::result;
+
+	cout << plus12() << endl;
+
 	/*
 	 * Examples of compile time rational calculations
 	 */
@@ -24,11 +43,11 @@ int main(int argc, char* argv[])
 	cout << highest_common_factor<10,5>::value << endl;
 
 	// simplify the result of the previous addition
-	simplify<decltype(res)>::result simpl1;
+	rational::simplify<decltype(res)>::result simpl1;
 	cout << simpl1 << endl;
 
 	// simplify a negative rational
-	simplify<Rational<-2,4>>::result simpl2;
+	rational::simplify<Rational<-2,4>>::result simpl2;
 	cout << simpl2 << endl;
 
 	/*
@@ -37,7 +56,7 @@ int main(int argc, char* argv[])
 	quantity<length> l = 1.0;
 	quantity<force> f = 2.0;
 	quantity<work> w = l*f;
-	cout << w << endl;
+	cout << "W = " << w << endl;
 	//quantity<force> f_error = l*f; // compile error: dimension of l*f does not match 'force'
 	
 	/*
@@ -46,7 +65,7 @@ int main(int argc, char* argv[])
 	quantity<acceleration,real3> a(1.0,2.0,3.0);
 	quantity<mass> m(1.4);
 	quantity<force,real3> f2 = a*m;
-	cout << f2 << endl;
+	cout << "F = " << f2 << endl;
 
 	quantity<area> A(4.0);
 	quantity<length> L = sqrt(A);

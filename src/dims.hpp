@@ -1,5 +1,6 @@
 #include "rational.hpp"
 #include <cmath>
+#include <ratio>
 
 namespace dims {
 
@@ -15,7 +16,7 @@ namespace dims {
 
 	// convenience using-statement for generating dimensions with integer powers
 	template<int M, int L, int T>
-	using IntDim = Dimension<Rational<M>,Rational<L>,Rational<T>>;
+	using IntDim = Dimension<std::ratio<M>,std::ratio<L>,std::ratio<T>>;
 
 	// basic dimension typedefs
 	typedef IntDim<0,0,0>	number;
@@ -30,13 +31,19 @@ namespace dims {
 	typedef IntDim<0,3,0>	volume;
 	typedef IntDim<0,0,-1>	frequency;
 
+	// return a simplified ratio
+	template<class R>
+	struct simplify {
+		using result = std::ratio<R::num,R::den>;
+	};
+
 	// operations for modifying dimensions
 	template< class Dim1, class Dim2 >
 	struct mult_Dimension {
 		using result = Dimension<
-					 typename simplify<typename add_Rational<typename Dim1::mass, typename Dim2::mass>::result>::result,
-					 typename simplify<typename add_Rational<typename Dim1::length, typename Dim2::length>::result>::result,
-					 typename simplify<typename add_Rational<typename Dim1::time, typename Dim2::time>::result>::result
+					 typename simplify<typename std::ratio_add<typename Dim1::mass,	typename Dim2::mass>::type>::result,
+					 typename simplify<typename std::ratio_add<typename Dim1::length,	typename Dim2::length>::type>::result,
+					 typename simplify<typename std::ratio_add<typename Dim1::time,	typename Dim2::time>::type>::result
 					   >;
 	};
 
@@ -44,28 +51,27 @@ namespace dims {
 	template< class Dim1, class R1 >
 	struct pow_Dimension {
 		using result = Dimension<
-					 typename simplify<typename mult_Rational<typename Dim1::mass,   R1>::result>::result,
-					 typename simplify<typename mult_Rational<typename Dim1::length, R1>::result>::result,
-					 typename simplify<typename mult_Rational<typename Dim1::time,   R1>::result>::result
+					typename simplify<typename std::ratio_multiply<typename Dim1::mass,	R1>::type>::result,
+					typename simplify<typename std::ratio_multiply<typename Dim1::length,R1>::type>::result,
+					typename simplify<typename std::ratio_multiply<typename Dim1::time,	R1>::type>::result
 					   >;
 	};
-
 	// get the reciprocal of a dimension
 	template< class Dim1 >
 	struct inv_Dimension {
 		using result = Dimension<
-				 Rational<-Dim1::mass::numerator,	Dim1::mass::denominator>,
-				 Rational<-Dim1::length::numerator,	Dim1::length::denominator>,
-				 Rational<-Dim1::time::numerator,	Dim1::time::denominator>
-				>;
+					typename simplify<std::ratio<-Dim1::mass::num,	Dim1::mass::den>>::result,
+					typename simplify<std::ratio<-Dim1::length::num,	Dim1::length::den>>::result,
+					typename simplify<std::ratio<-Dim1::time::num,	Dim1::time::den>>::result
+						>;
 	};
 
 	template< class Dim1 >
-	using sqrt_Dimension = pow_Dimension<Dim1,Rational<1,2>>;
+	using sqrt_Dimension = pow_Dimension<Dim1,std::ratio<1,2>>;
 
 	/*
 	 * A wrapper for data which includes information about dimensions.
-	 * With compiler optimisations this has no overhead (tested with g++ 4.7 at 03).
+	 * With compiler optimisations this has no overhead (tested with g++ 4.7 with -O3).
 	 */
 	template<class Dim, class T=double>
 	struct quantity {
@@ -123,9 +129,9 @@ namespace dims {
 		return quantity<typename sqrt_Dimension<Dim>::result,T>(::sqrt(qty.val));
 	}
 
-	template<class Dim, class T, int N>
-	quantity< typename pow_Dimension<Dim,Rational<N>>::result, T> pow(const quantity<Dim,T>& qty) {
-		return quantity<typename pow_Dimension<Dim,Rational<N>>::result,T>(::pow(qty.val,N));
+	template<class Dim, class T, class R>
+	quantity< typename pow_Dimension<Dim,R>::result, T> pow(const quantity<Dim,T>& qty) {
+		return quantity<typename pow_Dimension<Dim,R>::result,T>(::pow(qty.val,(double)R::num/(double)R::den));
 	}
 
 }; // namespace dims
