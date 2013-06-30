@@ -179,12 +179,6 @@ namespace dims {
 		return quantity<typename pow_Dimension<Dim,decltype(R)>::result,T>(::pow(qty.val,(double)decltype(R)::num/(double)decltype(R)::den));
 	}
 
-	// raise to an integer power
-	/*template<class Dim, class T, intmax_t A> // TODO: can we deduce A from the value of N?
-	quantity< typename pow_Dimension<Dim,std::ratio<A,B>>::result, T> pow(const quantity<Dim,T>& qty, intmax_t N) {
-		return quantity<typename pow_Dimension<Dim,decltype(R)>::result,T>(::pow(qty.val,(double)decltype(R)::num/(double)decltype(R)::den));
-	}*/
-
 	// definitions of some useful numbers
 	const quantity<number> eulers = 2.7182818284590452353; // e
 	const quantity<number> pi     = 3.1415926535897932384; // pi

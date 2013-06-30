@@ -1,6 +1,6 @@
 ## Quantities
 
-A C++ template metaprogramming library for enforcing dimensional consistency at compile time. Inspired by boost units, partly written as an exercise for myself and also to handle mixed types nicely.
+A C++ template meta-programming library for enforcing dimensional consistency at compile time. Inspired by boost units, partly written as an exercise for myself and also to handle mixed types nicely.
 
 ### Use
 
@@ -13,4 +13,4 @@ Physical quantities can be wrapped in a `quantity` class which enforces that cal
 
 In this way accidental attempts to store variables in the wrong types are caught at compile time.
 
-We can also save ourselfs some typing through the use of the `auto` keyword. The last line in the example above would become `auto f = m*a;` and the compiler automatically deduces the correct type.
+We can also save ourselves some typing through the use of the `auto` keyword. The last line in the example above would become `auto f = m*a;` and the compiler automatically deduces the correct type.

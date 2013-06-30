@@ -12,7 +12,6 @@ using namespace lists;
 
 int main(int argc, char* argv[])
 {
-
 	/*
 	 * Example of static lists
 	 */
