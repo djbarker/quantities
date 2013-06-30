@@ -13,6 +13,7 @@ class nvect {
 
 public:
 	nvect(){}
+
 	nvect(std::array<T,N>&& vals) :values(vals) {
 	}
 
@@ -26,8 +27,22 @@ public:
 
 	~nvect(){}
 
+	nvect& operator=(const nvect& v){
+		values = v.values;
+		return *this;
+	}
+
+	// access operator
 	T& operator[](size_t i){
 		return values[i];
+	}
+
+	// scalar product
+	nvect operator* (const this_type& vect){
+		this_type out;
+		for(int i=0;i<N;++i)
+			out.values[i] = values[i]*vect.values[i];
+		return out;
 	}
 
 	nvect operator* (T scalar){
@@ -35,6 +50,12 @@ public:
 		for(int i=0; i<N; ++i)
 			out.values[i] = values[i]*scalar;
 		return out;
+	}
+
+	nvect operator/ (T scalar){
+		this_type out;
+		for(int i=0; i<N; ++i)
+			out.values[i] = values[i]/scalar;
 	}
 
 	friend std::ostream& operator<<(std::ostream& out,const nvect<N,T>& v){
