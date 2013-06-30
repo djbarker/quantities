@@ -68,9 +68,13 @@ int main(int argc, char* argv[])
 	quantity<force,real3> f2 = a*m;
 	cout << "F = " << f2 << endl;
 
+	/*
+	 * Example of using functions which change dimensions
+	 */
 	quantity<area> A(4.0);
 	quantity<length> L = sqrt(A);
 	cout << "L = " << L << endl;
+	quantity<volume> V = pow(L,ratio<3,1>());
 
 	return 0;
 }

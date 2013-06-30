@@ -73,6 +73,8 @@ namespace dims {
 	struct quantity {
 		T val;
 
+		typedef Dim dims;
+
 		// basic constructors
 		quantity():val(){}
 		quantity(T val):val(val){}
@@ -119,16 +121,27 @@ namespace dims {
 		}
 	};
 
-	// wrappers for functions which change dimension
+	/*
+	 * Wrappers for functions which change dimension
+	 */
+
+	// square root
 	template<class Dim, class T>
 	quantity< typename sqrt_Dimension<Dim>::result, T> sqrt(const quantity<Dim,T>& qty) {
 		return quantity<typename sqrt_Dimension<Dim>::result,T>(::sqrt(qty.val));
 	}
 
-	template<class Dim, class T, class R>
-	quantity< typename pow_Dimension<Dim,R>::result, T> pow(const quantity<Dim,T>& qty) {
-		return quantity<typename pow_Dimension<Dim,R>::result,T>(::pow(qty.val,(double)R::num/(double)R::den));
+	// raise to a rational power
+	template<class Dim, class T, intmax_t A, intmax_t B> // (has to be intmax_t to match definition of std::ratio)
+	quantity< typename pow_Dimension<Dim,std::ratio<A,B>>::result, T> pow(const quantity<Dim,T>& qty, std::ratio<A,B> R) {
+		return quantity<typename pow_Dimension<Dim,decltype(R)>::result,T>(::pow(qty.val,(double)decltype(R)::num/(double)decltype(R)::den));
 	}
+
+	// raise to an integer power
+	/*template<class Dim, class T, intmax_t A> // TODO: can we deduce A from the value of N?
+	quantity< typename pow_Dimension<Dim,std::ratio<A,B>>::result, T> pow(const quantity<Dim,T>& qty, intmax_t N) {
+		return quantity<typename pow_Dimension<Dim,decltype(R)>::result,T>(::pow(qty.val,(double)decltype(R)::num/(double)decltype(R)::den));
+	}*/
 
 }; // namespace dims
 
