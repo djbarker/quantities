@@ -71,10 +71,20 @@ int main(int argc, char* argv[])
 	/*
 	 * Example of using functions which change dimensions
 	 */
-	quantity<area> A(4.0);
+	quantity<area> A = 4.0;
 	quantity<length> L = sqrt(A);
 	cout << "L = " << L << endl;
 	quantity<volume> V = pow(L,ratio<3,1>());
+
+	/*
+	 * Assignment operators
+	 */
+
+	quantity<length> dist = 2.4;
+	// dist += quantity<mass>(12.4); // compilation error
+	dist += quantity<length>(1.6);
+	// dist *= quantity<mass>(1.0); // compilation error
+	dist *= quantity<number>(2.0);
 
 	return 0;
 }

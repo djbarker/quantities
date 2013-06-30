@@ -116,6 +116,48 @@ namespace dims {
 			return quantity<new_dim<typename inv_Dimension<Dim2>::result>,div_type<T2>>(val/rhs.val);
 		}
 
+		/*
+		 * We can only multiply-assign and divide-assign by dimensionless numbers
+		 */
+		template<class Dim2, class T2>
+		quantity<Dim,T>& operator*=(quantity<Dim2,T2> rhs) {
+			static_assert(std::is_same<Dim2,typename make_list_from_type<list_length<Dim>::value,std::ratio<0>>::type>::value,"Can only *= with dimensionless RHS");
+			val *= rhs.val;
+			return *this;
+		}
+
+		template<class Dim2, class T2>
+		quantity<Dim,T>& operator/=(quantity<Dim2,T2> rhs) {
+			static_assert(std::is_same<Dim2,typename make_list_from_type<list_length<Dim>::value,std::ratio<0>>::type>::value,"Can only *= with dimensionless RHS");
+			val /= rhs.val;
+			return *this;
+		}
+
+		/*
+		 * We can only and or subtract quantities with the same dimension.
+		 */
+
+		template<class T2, class T3>
+		quantity<Dim,T3> operator+(quantity<Dim,T2> rhs) {
+			return quantity<Dim,T3>(val+rhs.val);
+		}
+
+		template<class T2, class T3>
+		quantity<Dim,T3> operator-(quantity<Dim,T2> rhs) {
+			return quantity<Dim,T3>(val+rhs.val);
+		}
+
+		template<class T2>
+		quantity<Dim,T>& operator+=(quantity<Dim,T2> rhs) {
+			val += rhs.val;
+			return *this;
+		}
+
+		template<class T2>
+		quantity<Dim,T>& operator-=(quantity<Dim,T2> rhs) {
+			val -= rhs.val;
+			return *this;
+		}
 		friend std::ostream& operator<<(std::ostream& out, const quantity<Dim,T> qty) {
 			return out << qty.val;
 		}
@@ -142,6 +184,11 @@ namespace dims {
 	quantity< typename pow_Dimension<Dim,std::ratio<A,B>>::result, T> pow(const quantity<Dim,T>& qty, intmax_t N) {
 		return quantity<typename pow_Dimension<Dim,decltype(R)>::result,T>(::pow(qty.val,(double)decltype(R)::num/(double)decltype(R)::den));
 	}*/
+
+	// definitions of some useful numbers
+	const quantity<number> eulers = 2.7182818284590452353; // e
+	const quantity<number> pi     = 3.1415926535897932384; // pi
+	const quantity<number> phi    = 1.6180339887498948482; // golden-ratio
 
 }; // namespace dims
 
