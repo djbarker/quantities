@@ -1,6 +1,7 @@
 .cproject
 .project
 Debug
+Release
 *.out
 *.s
 *.o
