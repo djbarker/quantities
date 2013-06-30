@@ -68,9 +68,22 @@ int main(int argc, char* argv[])
 	quantity<force,real3> f2 = a*m;
 	cout << "F = " << f2 << endl;
 
-	quantity<area> A(4.0);
+	/*
+	 * Functions which change dimension
+	 */
+	quantity<area> A = 4.0;
 	quantity<length> L = sqrt(A);
 	cout << "L = " << L << endl;
+
+	/*
+	 * Assignment operators
+	 */
+
+	quantity<length> dist = 2.4;
+	// dist += quantity<mass>(12.4); // compilation error
+	dist += quantity<length>(1.6);
+	// dist *= quantity<mass>(1.0); // compilation error
+	dist *= quantity<number>(2.0);
 
 	return 0;
 }
