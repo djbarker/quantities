@@ -106,5 +106,12 @@ int main(int argc, char* argv[])
 	unit<area,imperial_system> A4 = A3; // automatic conversion to ft^2: should be 0.4306
 	cout << A4 << endl;
 
+	/*
+	 * Examples with literals
+	 */
+	auto L4 = 3.4_m;
+	auto F3 = 2.0_kg_m_per_s_squared;
+	unit<work,si_system> W2 = L4*F3;
+
 	return 0;
 }

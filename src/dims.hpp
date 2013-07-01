@@ -47,7 +47,6 @@ namespace dims {
 	struct pow_Dimension {
 		using _RList = typename make_list_from_type<list_length<Dim>::value,R>::type;
 		using result = typename operate<ratio_simplify,typename operate<std::ratio_multiply,Dim,_RList>::result>::result;
-
 	};
 
 	// get the reciprocal of a dimension

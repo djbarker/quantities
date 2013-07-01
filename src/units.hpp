@@ -25,7 +25,6 @@ namespace units
 	namespace imperial
 	{
 		struct ft_t {};
-		struct in_t {};
 		struct lb_t {};
 	}
 
@@ -56,7 +55,7 @@ namespace units
 
 	/*
 	 * A recursive function which computes compound conversion factors from
-	 * fundamental conversion factors and the rational powers of a quantities
+	 * fundamental conversion factors and the rational powers of a quantity's
 	 * dimensions.
 	 */
 	template<class Dim, class System1, class System2>
@@ -145,6 +144,17 @@ namespace units
 	unit<dims::time,si_system> second;
 	unit<dims::length,cgs_system> cm;
 	unit<dims::mass,cgs_system> gram;
+
+	/*
+	 * Literal definitions for easy unit creation
+	 */
+	constexpr decltype(meter)		operator"" _m (long double d) { return ((double)d)*meter; }
+	constexpr decltype(kilogram)	operator"" _kg(long double d) { return d*kilogram; }
+	constexpr decltype(second)		operator"" _s (long double d) { return d*second; }
+	constexpr decltype(cm)			operator"" _cm(long double d) { return d*cm; }
+	constexpr decltype(gram)		operator"" _g (long double d) { return d*gram; }
+	constexpr decltype(kilogram*meter/(second*second))
+									operator"" _kg_m_per_s_squared(long double d) { return d*meter*kilogram/(second*second); }
 
 } // namespace units
 
