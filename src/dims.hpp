@@ -77,7 +77,7 @@ namespace dims {
 
 		// basic constructors
 		quantity():val(){}
-		quantity(T val):val(val){}
+		explicit quantity(T val):val(val){}
 
 		// forward constructor (allows one to use constructor arguments of underlying value type)
 		template<typename... Ts>

@@ -3,12 +3,14 @@
 #include "vect.hpp"
 #include "dims.hpp"
 #include "lists.hpp"
+#include "units.hpp"
 #include "rational.hpp"
 
 using namespace std;
 using namespace dims;
-using namespace rational;
 using namespace lists;
+using namespace units;
+using namespace rational;
 
 int main(int argc, char* argv[])
 {
@@ -80,10 +82,22 @@ int main(int argc, char* argv[])
 	 */
 
 	quantity<length> dist = 2.4;
-	// dist += quantity<mass>(12.4); // compilation error
+	// dist += quantity<mass>(12.4); // compilation error - cannot add quantities with different dimensions
 	dist += quantity<length>(1.6);
-	// dist *= quantity<mass>(1.0); // compilation error
+	// dist *= quantity<mass>(1.0); // compilation error - multiplying changes dimension
 	dist *= quantity<number>(2.0);
+
+	/*
+	 * Examples with units
+	 */
+
+	unit<length,si_system> L2 = 4.0*meter;
+	unit<area,si_system> A2 = L2*(1.0*cm);
+	cout << A2 << endl; // should be 0.04 m^2
+	unit<area,si_system> A3 = (1.0*cm)*L2; // check reverse conversion
+	cout << A3 << endl;
+	unit<area,imperial_system> A4 = A3; // automatic conversion to ft^2: should be 0.4306
+	cout << A4 << endl;
 
 	return 0;
 }
