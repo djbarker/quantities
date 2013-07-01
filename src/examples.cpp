@@ -26,9 +26,16 @@ int main(int argc, char* argv[])
 	cout << list1() << endl;
 	cout << list2() << endl;
 
+	// apply an operation to them and print
 	using plus12 = operate<add_Rational,list1,list2>::result;
 
 	cout << plus12() << endl;
+
+	// add items to the first list
+	using list3 = push_back<list1,Rational<6>>::type;
+	using list4 = push_front<list3,Rational<0>>::type;
+
+	cout << list4() << endl;
 
 	/*
 	 * Examples of compile time rational calculations

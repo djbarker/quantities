@@ -34,9 +34,9 @@ namespace units
 	using imperial_system = lists::static_list<imperial::lb_t,imperial::ft_t,si::s_t>::elements;
 
 	/*
-	 * Conversion factors for fundamental units. Returns a unit value 1.0 originally in
+	 * Conversion factors for fundamental units. Returns a unit originally of value 1.0 in
 	 * unit U2 converted to U1. This is done as a static member of a template struct to
-	 * allow us to partially specialize for the case where the units are the same
+	 * allow us to partially specialize for the case where the units are the same.
 	 */
 
 	template<class U1, class U2>

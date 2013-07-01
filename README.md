@@ -26,7 +26,7 @@ Another key ability is the ability to handle units nicely. As with boost units Q
 
     unit<mass,si_system> m = 2.0*kilogram;
 
-Notice that the type defaults to `double` as with `quantity`. The unit system is merely a `static_list` containing types specifying which base unit to use for each fundamental dimension. So the `si_system` is defined as `static_list<si::kg_t,si::m_t,si::s_t>` to represent kilograms, meters and seconds. This means that users can create their own systems of units if they so desire. It is even possible to create new fundamental units by defining custom types and converters **[see section Converters]**. As with Boost::units quantities are automatically converted to be in the correct units.
+Notice that the type defaults to `double` as with `quantity`. The unit system is merely a `static_list` containing types specifying which base unit to use for each fundamental dimension. So the `si_system` is defined as `static_list<si::kg_t,si::m_t,si::s_t>` to represent kilograms, meters and seconds. This means that users can create their own systems of units if they so desire. It is even possible to create new fundamental units by defining custom types and converters *[see section Converters]*. As with Boost::units quantities are automatically converted to be in the correct units.
 
     unit<length,si_system> l = 4.0*meter;
     unit<area,si_system> a = l*(1.0*cm);

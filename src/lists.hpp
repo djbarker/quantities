@@ -59,6 +59,23 @@ namespace lists
 		using type = list_element<T,end_element>; // end recursion
 	};
 
+	// add an element to the front of the list
+	template<class List, class T>
+	struct push_front {
+		using type = list_element<T,List>;
+	};
+
+	// add an element to the end of the list
+	template<class List, class T>
+	struct push_back {
+		using type = list_element<typename List::value,typename push_back<typename List::tail,T>::type>;
+	};
+
+	template<class T>
+	struct push_back<end_element,T> {
+		using type = list_element<T,end_element>;
+	};
+
 	/*
 	 * Performs an operation on N lists. The lists must have the same length.
 	 * The operation is specified as a class template with a return typedef named
