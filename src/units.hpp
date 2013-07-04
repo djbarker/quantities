@@ -76,20 +76,18 @@ namespace units
 	template<class Dim, class System, class T = double>
 	class unit {
 		T val;
-		//unit(const T& t) : val(t) {}
-		unit(T t) : val(t) {}
-
 		using this_type = unit<Dim,System,T>;
 
 	public:
-		unit() :val(1.0) {}
+		constexpr unit(T t) : val(t) {}
+		constexpr unit() :val(1.0) {}
 
 		// create a unit from a quantity with different units (but same dimensions)
 		template<class System2>
-		unit(const unit<Dim,System2,T>& u) :val(u.val*conversion_factor<Dim,System,System2>()) {}
+		constexpr unit(const unit<Dim,System2,T>& u) :val(u.val*conversion_factor<Dim,System,System2>()) {}
 
 		// create a unit from another quantity with the same units - no conversion necessary
-		unit(const this_type& u) :val(u.val) {}
+		constexpr unit(const this_type& u) :val(u.val) {}
 
 		/*
 		 * Multiply units - produces a unit object with the correct dimensions
@@ -101,7 +99,7 @@ namespace units
 		using mult_type = unit<typename dims::mult_Dimension<Dim,Dim2>::result,System,decltype(std::declval<T>()*std::declval<T2>())>;
 
 		template<class Dim2, class System2, class T2>
-		mult_type<Dim2,System2,T2> operator*(const unit<Dim2,System2,T2>& u){
+		mult_type<Dim2,System2,T2> constexpr operator*(const unit<Dim2,System2,T2>& u){
 			return mult_type<Dim2,System2,T2>
 							(
 								unit<Dim2,System,T2>(u) // convert u to the correct system
@@ -114,13 +112,13 @@ namespace units
 		using div_type = unit<typename dims::mult_Dimension<Dim,typename dims::inv_Dimension<Dim2>::result>::result,System,decltype(std::declval<T>()/std::declval<T2>())>;
 
 		template<class Dim2, class System2, class T2>
-		div_type<Dim2,System2,T2> operator/(const unit<Dim2,System2,T2>& u){
+		div_type<Dim2,System2,T2> constexpr operator/(const unit<Dim2,System2,T2>& u){
 			return div_type<Dim2,System2,T2>(val / unit<Dim2,System,T2>(u).val);
 		}
 
 		// create a unit from a raw data type - declaration
 		template<class Dim2, class System2, class T2>
-		friend unit<Dim2,System2,T2> operator*(T2 t,const unit<Dim2,System2,T2>& u);
+		friend constexpr unit<Dim2,System2,T2> operator*(T2 t,const unit<Dim2,System2,T2>& u);
 
 		friend std::ostream& operator<<(std::ostream& out, this_type u) {
 			return out << u.val;
@@ -132,7 +130,7 @@ namespace units
 
 	// create a unit from a raw data type - defintion
 	template<class Dim2, class System2, class T2>
-	unit<Dim2,System2,T2> operator*(T2 t,const unit<Dim2,System2,T2>& u){
+	unit<Dim2,System2,T2> constexpr operator*(T2 t,const unit<Dim2,System2,T2>& u){
 		return unit<Dim2,System2,T2>(t); // utilise friendship
 	}
 
@@ -149,12 +147,12 @@ namespace units
 	 * Literal definitions for easy unit creation
 	 */
 	constexpr decltype(meter)		operator"" _m (long double d) { return ((double)d)*meter; }
-	constexpr decltype(kilogram)	operator"" _kg(long double d) { return d*kilogram; }
-	constexpr decltype(second)		operator"" _s (long double d) { return d*second; }
-	constexpr decltype(cm)			operator"" _cm(long double d) { return d*cm; }
-	constexpr decltype(gram)		operator"" _g (long double d) { return d*gram; }
+	constexpr decltype(kilogram)	operator"" _kg(long double d) { return ((double)d)*kilogram; }
+	constexpr decltype(second)		operator"" _s (long double d) { return ((double)d)*second; }
+	constexpr decltype(cm)			operator"" _cm(long double d) { return ((double)d)*cm; }
+	constexpr decltype(gram)		operator"" _g (long double d) { return ((double)d)*gram; }
 	constexpr decltype(kilogram*meter/(second*second))
-									operator"" _kg_m_per_s_squared(long double d) { return d*meter*kilogram/(second*second); }
+									operator"" _kg_m_per_s_squared(long double d) { return ((double)d)*meter*kilogram/(second*second); }
 
 } // namespace units
 

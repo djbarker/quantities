@@ -13,23 +13,6 @@ namespace dims {
 	template<class... Rs>
 	using Dimension = typename static_list<Rs...>::elements;
 
-	// convenience using-statement for generating dimensions with integer powers
-	template<int... Is>
-	using IntDim = Dimension<std::ratio<Is>...>;
-
-	// basic dimension typedefs
-	typedef IntDim<0,0,0>	number;
-	typedef IntDim<1,0,0>	mass;
-	typedef IntDim<0,1,0>	length;
-	typedef IntDim<0,0,1>	time;
-	typedef IntDim<0,1,-1>	velocity;
-	typedef IntDim<0,1,-2>	acceleration;
-	typedef IntDim<1,1,-2>	force;
-	typedef IntDim<1,2,-2>	work;
-	typedef IntDim<0,2,0>	area;
-	typedef IntDim<0,3,0>	volume;
-	typedef IntDim<0,0,-1>	frequency;
-
 	// return a simplified ratio
 	template<class R>
 	struct ratio_simplify {
@@ -75,17 +58,17 @@ namespace dims {
 		typedef Dim dims;
 
 		// basic constructors
-		quantity():val(){}
+		constexpr quantity():val(){}
 		explicit quantity(T val):val(val){}
 
 		// forward constructor (allows one to use constructor arguments of underlying value type)
 		template<typename... Ts>
-		quantity(Ts... vs) :val(vs...) {
+		constexpr quantity(Ts... vs) :val(vs...) {
 		}
 
 		// copy constructor
 		template<class Dim2>
-		quantity(const quantity<Dim2,T>& rhs):val(rhs.val){
+		constexpr quantity(const quantity<Dim2,T>& rhs):val(rhs.val){
 			static_assert(std::is_same<Dim,Dim2>::value,"Cannot copy quantity with different dimensions.");
 		}
 
@@ -178,10 +161,66 @@ namespace dims {
 		return quantity<typename pow_Dimension<Dim,decltype(R)>::result,T>(::pow(qty.val,(double)decltype(R)::num/(double)decltype(R)::den));
 	}
 
-	// definitions of some useful numbers
-	const quantity<number> eulers = 2.7182818284590452353; // e
-	const quantity<number> pi     = 3.1415926535897932384; // pi
-	const quantity<number> phi    = 1.6180339887498948482; // golden-ratio
+	/*
+	 * Some common dimensions and dimensional quantities.
+	 */
+
+	// convenience using-statement for generating dimensions with integer powers
+	template<int... Is>
+	using IntDim = Dimension<std::ratio<Is>...>;
+
+	// basic dimension typedefs
+	typedef IntDim<0,0,0>	number;
+	typedef IntDim<1,0,0>	mass;
+	typedef IntDim<0,1,0>	length;
+	typedef IntDim<0,0,1>	time;
+	typedef IntDim<0,1,-1>	velocity;
+	typedef IntDim<1,1,-1>  momentum;
+	typedef IntDim<0,1,-2>	acceleration;
+	typedef IntDim<1,1,-2>	force;
+	typedef IntDim<1,2,-2>	work;
+	typedef IntDim<0,2,0>	area;
+	typedef IntDim<0,3,0>	volume;
+	typedef IntDim<0,0,-1>	frequency;
+
+#define CQ_IMPL(a) template<typename T=double> using a ## _ ## t = quantity<a,T>;
+
+	// typedefs for common quantities - saves typing
+	CQ_IMPL(number)
+	CQ_IMPL(mass)
+	CQ_IMPL(length)
+	CQ_IMPL(time)
+	CQ_IMPL(velocity)
+	CQ_IMPL(momentum)
+	CQ_IMPL(acceleration)
+	CQ_IMPL(force)
+	CQ_IMPL(work)
+	CQ_IMPL(area)
+	CQ_IMPL(volume)
+	CQ_IMPL(frequency)
+
+#define UDL_IMPL(a) constexpr quantity<a,double> operator"" _ ## a (long double d) { return quantity<a,double>(d); };
+
+	// user-defined literals for creating dimensional doubles quickly
+	UDL_IMPL(number)
+	UDL_IMPL(mass)
+	UDL_IMPL(length)
+	UDL_IMPL(time)
+	UDL_IMPL(velocity)
+	UDL_IMPL(momentum)
+	UDL_IMPL(acceleration)
+	UDL_IMPL(force)
+	UDL_IMPL(work)
+	UDL_IMPL(area)
+	UDL_IMPL(volume)
+	UDL_IMPL(frequency)
+
+	/*
+	 * Definitions of some useful numbers
+	 */
+	constexpr number_t<> eulers = 2.7182818284590452353; // e
+	constexpr number_t<> pi     = 3.1415926535897932384; // pi
+	constexpr number_t<> phi    = 1.6180339887498948482; // golden-ratio
 
 }; // namespace dims
 

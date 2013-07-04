@@ -76,6 +76,12 @@ int main(int argc, char* argv[])
 	quantity<force,real3> f2 = a*m;
 	cout << "F = " << f2 << endl;
 
+	// using the less verbose version
+	mass_t<> m2 = 3.4; // unfortunately since mass_t is a template we need to write mass_t<> for the default double.
+	auto m3 = 3.4_mass; // longer but perhaps more readable version using UDL
+	velocity_t<real3> v(1.0,2.0,3.0);
+
+
 	/*
 	 * Example of using functions which change dimensions
 	 */
@@ -83,6 +89,7 @@ int main(int argc, char* argv[])
 	quantity<length> L = sqrt(A);
 	cout << "L = " << L << endl;
 	quantity<volume> V = pow(L,ratio<3,1>());
+	cout << "V = " << V << endl;
 
 	/*
 	 * Assignment operators
@@ -92,7 +99,7 @@ int main(int argc, char* argv[])
 	// dist += quantity<mass>(12.4); // compilation error - cannot add quantities with different dimensions
 	dist += quantity<length>(1.6);
 	// dist *= quantity<mass>(1.0); // compilation error - multiplying changes dimension
-	dist *= quantity<number>(2.0);
+	dist *= quantity<dims::number>(2.0);
 
 	/*
 	 * Examples with units
@@ -112,6 +119,9 @@ int main(int argc, char* argv[])
 	auto L4 = 3.4_m;
 	auto F3 = 2.0_kg_m_per_s_squared;
 	unit<work,si_system> W2 = L4*F3;
+
+	cout << W2 << endl;
+
 
 	return 0;
 }
