@@ -1,6 +1,6 @@
 # Quantities
 
-A C++ template meta-programming library for enforcing dimensional consistency at compile time. Inspired by boost units, partly written as an exercise for myself and also to handle mixed types nicely.
+A C++ template meta-programming library for enforcing dimensional consistency at compile time. Inspired by Boost::units, partly written as an exercise for myself but also to handle mixed types nicely.
 
 ## Use
 ### Dimensions
@@ -18,11 +18,21 @@ In this way accidental attempts to store variables in the wrong types are caught
 
 We can also save ourselves some typing through the use of the `auto` keyword. The last line in the example above would become `auto f = m*a;` and the compiler automatically deduces the correct type.
 
+The `quantity` template class works nicely with various different types performing the correct multiplication and division operations on these. For example imagine we have a vector class called `vec3`. It has an overloaded multiplication operator `vec3 vec3::operator(double d)` representing scaling the vector and a constructor `vec3(double x, double y, double z)`. The the following code is perfectly valid
+
+    quantity<mass> m = 2.0;
+    quantity<acceleration,vec3> a(3.0,2.0,1.0) // the constructor for quantity<DIM,vec3> forwards the arguments to the constructor for vec3
+    auto f = m*a;
+
+Yielding an object `f` which has type `quantity<force,vec3>`.
+
 ### Units
 
 **Namespace: `units`**
 
-Another key ability is the ability to handle units nicely. As with boost units Quantities provides this capability; here through the use of the `unit` template class. The `unit` class is templated on a dimension (same as in above section), a system of units and a type; below is an example
+Another key ability is the ability to handle units nicely. As with Boost::units Quantities provides this capability; here through the use of the `unit` template class. Note, however, that the units part is not as neat as the dimensions part and I would recommend using Boost::units.
+
+The `unit` class is templated on a dimension (same as in above section), a system of units and a type; below is an example
 
     unit<mass,si_system> m = 2.0*kilogram;
 
