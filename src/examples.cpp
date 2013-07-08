@@ -42,6 +42,22 @@ int main(int argc, char* argv[])
 
 	cout << list5() << endl;
 
+	// get last item
+	using list_end = list_back<list4>::type;
+	cout << list_end() << endl;
+
+	// reverse the list
+	using list6 = list_reverse<list4>::type;
+	cout << list6() << endl;
+
+	// remove an element from the list
+	using list7 = pop_int<list4,1>::type;
+	cout << list7() << endl;
+
+	// get an element from the list
+	using list8 = list_get_int<list4,2>::type;
+	cout << list8() << endl;
+
 	/*
 	 * Examples of compile time rational calculations
 	 */
