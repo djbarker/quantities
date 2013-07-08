@@ -23,10 +23,6 @@ namespace lists
 
 	// construct the list using variadic templates
 	template<class T, class... Ts>
-	struct static_list;
-
-
-	template<class T, class... Ts>
 	struct static_list {
 		using elements = list_element<T,typename static_list<Ts...>::elements>;
 	};
@@ -46,6 +42,12 @@ namespace lists
 	template<>
 	struct list_length<end_element> {
 		static constexpr int value = 0; // end recursion
+	};
+
+	// reverse the list
+	template<class T>
+	struct list_reverse {
+
 	};
 
 	// construct a list of length N by duplicating the same type
@@ -74,6 +76,29 @@ namespace lists
 	template<class T>
 	struct push_back<end_element,T> {
 		using type = list_element<T,end_element>;
+	};
+
+	// remove the first element of the list
+	template<class T>
+	struct pop_front {
+		using type = typename T::tail;
+	};
+
+	// remove the last item in the list
+	template<class T>
+	struct pop_back {
+
+		template<class T1, class T2>
+		struct pop_back_impl {
+			using type = list_element<T1,typename pop_back_impl<typename T2::value, typename T2::tail>::type>;
+		};
+
+		template<class T1>
+		struct pop_back_impl<T1,end_element> {
+			using type = end_element;
+		};
+
+		using type = typename pop_back_impl<typename T::value,typename T::tail>::type;
 	};
 
 	/*

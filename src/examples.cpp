@@ -37,6 +37,11 @@ int main(int argc, char* argv[])
 
 	cout << list4() << endl;
 
+	// remove the last item from a list
+	using list5 = pop_back<list4>::type;
+
+	cout << list5() << endl;
+
 	/*
 	 * Examples of compile time rational calculations
 	 */
