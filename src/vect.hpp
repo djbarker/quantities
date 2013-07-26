@@ -58,6 +58,22 @@ public:
 			out.values[i] = values[i]/scalar;
 	}
 
+	bool operator< (const this_type& vect)
+	{
+		bool out = true;
+		for(int i=0;i<N;++i)
+			out = out && values[i]<vect[i];
+		return out;
+	}
+
+	bool operator<= (const this_type& vect)
+	{
+		bool out = true;
+		for(int i=0;i<N;++i)
+			out = out && values[i]<=vect[i];
+		return out;
+	}
+
 	friend std::ostream& operator<<(std::ostream& out,const nvect<N,T>& v){
 		out << "(" << v.values[0];
 		for(int i=1; i<N; ++i)
@@ -70,6 +86,6 @@ private:
 	std::array<T,N> values;
 };
 
-using real3 = nvect<3,double>;
+template<int N> using dvect<N,double>;
 
 #endif /* VECT_HPP_ */
