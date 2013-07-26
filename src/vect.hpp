@@ -37,7 +37,7 @@ public:
 		return values[i];
 	}
 
-	// scalar product
+	// element-wise multiplication
 	nvect operator* (const this_type& vect){
 		this_type out;
 		for(int i=0;i<N;++i)
@@ -45,6 +45,7 @@ public:
 		return out;
 	}
 
+	// multiplication by a scalar
 	nvect operator* (T scalar){
 		this_type out;
 		for(int i=0; i<N; ++i)
@@ -52,22 +53,32 @@ public:
 		return out;
 	}
 
+	T sum(){
+		T out; // default initialise in case T is some non-primitive type
+		for(int i=0; i<N; ++i)
+			out += values[i];
+		return out;
+	}
+
+	T dot(const this_type& vect){
+		return (vect*(*this)).sum();
+	}
+
 	nvect operator/ (T scalar){
 		this_type out;
 		for(int i=0; i<N; ++i)
 			out.values[i] = values[i]/scalar;
+		return out;
 	}
 
-	bool operator< (const this_type& vect)
-	{
+	bool operator< (const this_type& vect){
 		bool out = true;
 		for(int i=0;i<N;++i)
 			out = out && values[i]<vect[i];
 		return out;
 	}
 
-	bool operator<= (const this_type& vect)
-	{
+	bool operator<= (const this_type& vect){
 		bool out = true;
 		for(int i=0;i<N;++i)
 			out = out && values[i]<=vect[i];

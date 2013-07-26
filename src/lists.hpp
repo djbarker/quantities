@@ -205,10 +205,7 @@ std::ostream& operator<<(std::ostream& out, const lists::list_element<V,T>& el)
 	return out << "<" << V() << ", " << T() << ">";
 }
 
-std::ostream& operator<<(std::ostream& out, const lists::end_element& el)
-{
-	return out << "END";
-}
+std::ostream& operator<<(std::ostream& out, const lists::end_element& el);
 
 template<class... Ts>
 std::ostream& operator<<(std::ostream& out, const lists::static_list<Ts...>& list)
