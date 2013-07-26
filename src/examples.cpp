@@ -12,6 +12,8 @@ using namespace lists;
 using namespace units;
 using namespace rational;
 
+typedef dvect<3> real3;
+
 int main(int argc, char* argv[])
 {
 	/*

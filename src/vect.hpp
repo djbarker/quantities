@@ -86,6 +86,6 @@ private:
 	std::array<T,N> values;
 };
 
-template<int N> using dvect<N,double>;
+template<int N> using dvect = nvect<N,double>;
 
 #endif /* VECT_HPP_ */
