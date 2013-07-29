@@ -37,8 +37,12 @@ public:
 		return values[i];
 	}
 
+	const T& operator[](size_t i) const {
+		return values[i];
+	}
+
 	// element-wise multiplication
-	nvect operator* (const this_type& vect){
+	nvect operator* (const this_type& vect) const {
 		this_type out;
 		for(int i=0;i<N;++i)
 			out.values[i] = values[i]*vect.values[i];
@@ -46,43 +50,54 @@ public:
 	}
 
 	// multiplication by a scalar
-	nvect operator* (T scalar){
+	nvect operator* (T scalar) const {
 		this_type out;
 		for(int i=0; i<N; ++i)
 			out.values[i] = values[i]*scalar;
 		return out;
 	}
 
-	T sum(){
+	T sum() const {
 		T out; // default initialise in case T is some non-primitive type
 		for(int i=0; i<N; ++i)
 			out += values[i];
 		return out;
 	}
 
-	T dot(const this_type& vect){
+	T dot(const this_type& vect) const {
 		return (vect*(*this)).sum();
 	}
 
-	nvect operator/ (T scalar){
+	nvect operator/ (T scalar) const {
 		this_type out;
 		for(int i=0; i<N; ++i)
 			out.values[i] = values[i]/scalar;
 		return out;
 	}
 
-	bool operator< (const this_type& vect){
+	bool operator< (const this_type& vect) const {
 		bool out = true;
 		for(int i=0;i<N;++i)
 			out = out && values[i]<vect[i];
 		return out;
 	}
 
-	bool operator<= (const this_type& vect){
+	bool operator<= (const this_type& vect) const {
 		bool out = true;
 		for(int i=0;i<N;++i)
 			out = out && values[i]<=vect[i];
 		return out;
+	}
+
+	void serialize(std::ostream& out) const {
+		for(int i=0;i<N;++i)
+			out.write((char*)(values+i),sizeof(T));
+	}
+
+	void deserialize(std::istream& in)
+	{
+		for(int i=0;i<N;++i)
+			in.read((char*)(values+i),sizeof(T));
 	}
 
 	friend std::ostream& operator<<(std::ostream& out,const nvect<N,T>& v){

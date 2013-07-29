@@ -140,6 +140,13 @@ namespace dims {
 			val -= rhs.val;
 			return *this;
 		}
+
+		// for accessing members of val
+		T* operator->() {
+			return &val;
+		}
+
+		// delegate printing to the value type
 		friend std::ostream& operator<<(std::ostream& out, const quantity<Dim,T> qty) {
 			return out << qty.val;
 		}
@@ -173,6 +180,7 @@ namespace dims {
 	typedef IntDim<0,0,0>	number;
 	typedef IntDim<1,0,0>	mass;
 	typedef IntDim<0,1,0>	length;
+	typedef IntDim<0,1,0>	position;
 	typedef IntDim<0,0,1>	time;
 	typedef IntDim<0,1,-1>	velocity;
 	typedef IntDim<1,1,-1>  momentum;
@@ -182,6 +190,10 @@ namespace dims {
 	typedef IntDim<0,2,0>	area;
 	typedef IntDim<0,3,0>	volume;
 	typedef IntDim<0,0,-1>	frequency;
+	typedef IntDim<1,-1,-2> pressure;
+	typedef IntDim<1,-3,0>  density;
+	typedef IntDim<0,-3,0>  number_density;
+	typedef IntDim<1,-1,-1> viscosity; // dynamic
 
 #define CQ_IMPL(a) template<typename T=double> using a ## _ ## t = quantity<a,T>;
 
