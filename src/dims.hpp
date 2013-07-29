@@ -4,6 +4,7 @@
 #include "lists.hpp"
 #include <cmath>
 #include <ratio>
+#include <type_traits>
 
 namespace dims {
 
@@ -53,9 +54,9 @@ namespace dims {
 	 */
 	template<class Dim, class T=double>
 	struct quantity {
-		T val;
 
-		typedef Dim dims;
+		// all quantities are friends (e.g. quantity<mass> is friends with quantity<time> and vice-versa)
+		template<class Dim2, class T2> friend class quantity;
 
 		// basic constructors
 		constexpr quantity():val(){}
@@ -89,12 +90,12 @@ namespace dims {
 		 * in a quantity with the correct type and dimensions before returning.
 		 */
 		template<class Dim2, class T2>
-		quantity<new_dim<Dim2>,mult_type<T2>> operator* (quantity<Dim2,T2> rhs) {
+		quantity<new_dim<Dim2>,mult_type<T2>> operator* (quantity<Dim2,T2> rhs) const {
 			return quantity<new_dim<Dim2>,mult_type<T2>>(val*rhs.val);
 		}
 
 		template<class Dim2, class T2>
-		quantity<new_dim<typename inv_Dimension<Dim2>::result>,div_type<T2>> operator/(quantity<Dim2,T2> rhs) {
+		quantity<new_dim<typename inv_Dimension<Dim2>::result>,div_type<T2>> operator/(quantity<Dim2,T2> rhs) const {
 			return quantity<new_dim<typename inv_Dimension<Dim2>::result>,div_type<T2>>(val/rhs.val);
 		}
 
@@ -116,17 +117,17 @@ namespace dims {
 		}
 
 		/*
-		 * We can only and or subtract quantities with the same dimension.
+		 * We can only add or subtract quantities with the same dimension.
 		 */
 
-		template<class T2, class T3>
-		quantity<Dim,T3> operator+(quantity<Dim,T2> rhs) {
+		template<class T2, class T3=decltype(std::declval<T>()+std::declval<T2>())>
+		quantity<Dim,T3> operator+(quantity<Dim,T2> rhs) const {
 			return quantity<Dim,T3>(val+rhs.val);
 		}
 
-		template<class T2, class T3>
-		quantity<Dim,T3> operator-(quantity<Dim,T2> rhs) {
-			return quantity<Dim,T3>(val+rhs.val);
+		template<class T2, class T3=decltype(std::declval<T>()-std::declval<T2>())>
+		quantity<Dim,T3> operator-(quantity<Dim,T2> rhs) const {
+			return quantity<Dim,T3>(val-rhs.val);
 		}
 
 		template<class T2>
@@ -141,32 +142,50 @@ namespace dims {
 			return *this;
 		}
 
-		// for accessing members of val
+		// for accessing member functions of val
 		T* operator->() {
 			return &val;
+		}
+
+		template<typename U=T,typename R=decltype(std::declval<U>().operator[](0))>
+		quantity<Dim,R> operator[](int i) const {
+			return quantity<Dim,R>(val[i]);
 		}
 
 		// delegate printing to the value type
 		friend std::ostream& operator<<(std::ostream& out, const quantity<Dim,T> qty) {
 			return out << qty.val;
 		}
+
+		// discard dimensional saftey and get the raw value
+		friend T discard_dims(const quantity<Dim,T>& qty) {
+			return qty.val;
+		}
+
+		/*
+		 * Wrappers for functions which change dimension
+		 */
+
+		// square root
+		friend quantity< typename sqrt_Dimension<Dim>::result, T> sqrt(const quantity<Dim,T>& qty) {
+			return quantity<typename sqrt_Dimension<Dim>::result,T>(::sqrt(qty.val));
+		}
+
+		// raise to a rational power
+		template<typename R> // R must be a type of std::ratio
+		friend quantity< typename pow_Dimension<Dim,R>::result, T> pow(const quantity<Dim,T>& qty) {
+			return quantity<typename pow_Dimension<Dim,R>::result,T>(::pow(qty.val,(double)R::num/(double)R::den));
+		}
+
+		template<intmax_t A>
+		friend quantity< typename pow_Dimension<Dim,std::ratio<A>>::result,T> pow(const quantity<Dim,T>& qty) {
+			return quantity<typename pow_Dimension<Dim,std::ratio<A>>::result,T>(::pow(qty.val,(double)A));
+		}
+
+
+	private:
+		T val;
 	};
-
-	/*
-	 * Wrappers for functions which change dimension
-	 */
-
-	// square root
-	template<class Dim, class T>
-	quantity< typename sqrt_Dimension<Dim>::result, T> sqrt(const quantity<Dim,T>& qty) {
-		return quantity<typename sqrt_Dimension<Dim>::result,T>(::sqrt(qty.val));
-	}
-
-	// raise to a rational power
-	template<class Dim, class T, intmax_t A, intmax_t B> // (has to be intmax_t to match definition of std::ratio)
-	quantity< typename pow_Dimension<Dim,std::ratio<A,B>>::result, T> pow(const quantity<Dim,T>& qty, std::ratio<A,B> R) {
-		return quantity<typename pow_Dimension<Dim,decltype(R)>::result,T>(::pow(qty.val,(double)decltype(R)::num/(double)decltype(R)::den));
-	}
 
 	/*
 	 * Some common dimensions and dimensional quantities.

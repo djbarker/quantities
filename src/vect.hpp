@@ -68,6 +68,10 @@ public:
 		return (vect*(*this)).sum();
 	}
 
+	double magnitude() const {
+		return sqrt(this->dot(*this).sum());
+	}
+
 	nvect operator/ (T scalar) const {
 		this_type out;
 		for(int i=0; i<N; ++i)

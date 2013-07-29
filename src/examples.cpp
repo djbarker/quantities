@@ -111,7 +111,7 @@ int main(int argc, char* argv[])
 	quantity<area> A = 4.0;
 	quantity<length> L = sqrt(A);
 	cout << "L = " << L << endl;
-	quantity<volume> V = pow(L,ratio<3,1>());
+	quantity<volume> V = pow<3>(L);
 	cout << "V = " << V << endl;
 
 	/*
