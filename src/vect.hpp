@@ -95,13 +95,13 @@ public:
 
 	void serialize(std::ostream& out) const {
 		for(int i=0;i<N;++i)
-			out.write((char*)(values+i),sizeof(T));
+			out.write((char*)(&values[i]),sizeof(T));
 	}
 
 	void deserialize(std::istream& in)
 	{
 		for(int i=0;i<N;++i)
-			in.read((char*)(values+i),sizeof(T));
+			in.read((char*)(&values[i]),sizeof(T));
 	}
 
 	friend std::ostream& operator<<(std::ostream& out,const nvect<N,T>& v){
