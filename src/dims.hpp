@@ -55,6 +55,8 @@ namespace dims {
 	template<class Dim, class T=double>
 	struct quantity {
 
+		typedef T value_type;
+
 		// all quantities are friends (e.g. quantity<mass> is friends with quantity<time> and vice-versa)
 		template<class Dim2, class T2> friend class quantity;
 
