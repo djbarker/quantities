@@ -144,6 +144,17 @@ namespace dims {
 			return *this;
 		}
 
+		// comparison operators
+		template<class T2>
+		bool operator<(quantity<Dim,T2> rhs) const {
+			return val < rhs.val;
+		}
+
+		template<class T2>
+		bool operator<=(quantity<Dim,T2> rhs) const {
+			return val <= rhs.val;
+		}
+
 		// for accessing member functions of val
 		T* operator->() {
 			return &val;
