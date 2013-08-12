@@ -56,6 +56,7 @@ namespace dims {
 	struct quantity {
 
 		typedef T value_type;
+		typedef quantity<Dim,T> this_type;
 
 		// all quantities are friends (e.g. quantity<mass> is friends with quantity<time> and vice-versa)
 		template<class Dim2, class T2> friend class quantity;
@@ -155,6 +156,16 @@ namespace dims {
 			return val <= rhs.val;
 		}
 
+		template<class T2>
+		bool operator>(quantity<Dim,T2> rhs) const {
+			return val > rhs.val;
+		}
+
+		template<class T2>
+		bool operator>=(quantity<Dim,T2> rhs) const {
+			return val >= rhs.val;
+		}
+
 		// for accessing member functions of val
 		T* operator->() {
 			return &val;
@@ -171,8 +182,20 @@ namespace dims {
 		}
 
 		// discard dimensional saftey and get the raw value
-		friend T discard_dims(const quantity<Dim,T>& qty) {
+		friend T dims::discard_dims(const quantity<Dim,T>& qty) {
 			return qty.val;
+		}
+
+		/*
+		 * Wrappers for floor/ceil
+		 */
+
+		friend this_type floor(const this_type& qty) {
+			return this_type(::floor(qty.val));
+		}
+
+		friend this_type ceil(const this_type& qty) {
+			return this_type(::ceil(qty.val));
 		}
 
 		/*

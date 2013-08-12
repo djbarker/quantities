@@ -14,13 +14,17 @@ class nvect {
 	template<size_t M, class U> friend class nvect;
 
 public:
-	nvect(){}
+	// ensure nvect is "trivial" as well as standard-layout => POD
+	nvect() 								= default;
+	nvect(const this_type&) 				= default;
+	//nvect(this_type&&) 						= default;
+	//~nvect() 								= default;
+	this_type& operator=(const this_type&) 	= default;
+	//this_type& operator=(this_type&&) 		= default;
 
-	nvect(std::array<T,N>&& vals) :values(vals) {
-	}
-
-	nvect(const this_type& v) :values(v.values) {
-	}
+	/*
+	 * Non-trivial constructors
+	 */
 
 	// can be used to explicitly convert between nvects storing different types.
 	template<typename U>
@@ -29,22 +33,10 @@ public:
 			values[i] = T(v.values[i]);
 	}
 
-	template<typename U>
-	explicit nvect(const U& val) {
-		for(size_t i=0;i<N;++i)
-			values[i] = T(val);
-	}
-
-	template<typename... Ts>
-	nvect(T t, Ts&&... vs) :values{{std::forward<T>(t),std::forward<Ts>(vs)...}} {
-		static_assert(sizeof...(Ts)==N-1,"Not enough args supplied!");
-	}
-
-	~nvect(){}
-
-	nvect& operator=(const nvect& v){
-		values = v.values;
-		return *this;
+	// init each component to a different value
+	template<typename U, typename... Us>
+	nvect(U u, Us... us) :values{{T(u),T(us)...}} {
+		static_assert(sizeof...(Us)==N-1,"Not enough args supplied!");
 	}
 
 	// access operator
@@ -97,7 +89,7 @@ public:
 	template<typename U>
 	nvect<N,decltype(std::declval<T>()/std::declval<U>())>
 	operator/ (U scalar) const {
-		nvect<N,decltype(std::declval<T>()*std::declval<U>())> out;
+		nvect<N,decltype(std::declval<T>()/std::declval<U>())> out;
 		for(size_t i=0; i<N; ++i)
 			out[i] = values[i]/scalar;
 		return out;
@@ -128,6 +120,43 @@ public:
 		return out;
 	}
 
+	// assigment operators
+	this_type& operator+= (const this_type& vect) {
+		for(size_t i=0;i<N;++i)
+			values[i] += vect.values[i];
+		return *this;
+	}
+
+	this_type& operator-= (const this_type& vect) {
+		for(size_t i=0;i<N;++i)
+			values[i] -= vect.values[i];
+		return *this;
+	}
+
+	this_type& operator*= (const this_type& vect) {
+		for(size_t i=0;i<N;++i)
+			values[i] *= vect.values[i];
+		return *this;
+	}
+
+	this_type& operator/= (const this_type& vect) {
+		for(size_t i=0;i<N;++i)
+			values[i] /= vect.values[i];
+		return *this;
+	}
+
+	this_type& operator*= (T scalar) {
+		for(size_t i=0;i<N;++i)
+			values[i] *= scalar;
+		return *this;
+	}
+
+	this_type& operator/= (T scalar) {
+		for(size_t i=0;i<N;++i)
+			values[i] /= scalar;
+		return *this;
+	}
+
 	// comparison operators - useful for bounding boxes
 	bool operator< (const this_type& vect) const {
 		bool out = true;
@@ -154,6 +183,9 @@ public:
 			in.read((char*)(&values[i]),sizeof(T));
 	}
 
+	// make a vector where each component is the same value
+	template<size_t M, typename U, typename V> friend nvect<M,U> make_vect(const V& val);
+
 	friend std::ostream& operator<<(std::ostream& out,const nvect<N,T>& v){
 		out << "(" << v.values[0];
 		for(size_t i=1; i<N; ++i)
@@ -165,6 +197,13 @@ public:
 private:
 	std::array<T,N> values;
 };
+
+template<size_t M, typename U, typename V> nvect<M,U> make_vect(const V& val) {
+	nvect<M,U> out;
+	for(auto& o_val : out.values)
+		o_val = U(val);
+	return out;
+}
 
 template<size_t N> using dvect = nvect<N,double>;
 
