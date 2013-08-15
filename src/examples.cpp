@@ -12,7 +12,7 @@ using namespace lists;
 using namespace units;
 using namespace rational;
 
-typedef dvect<3> real3;
+typedef nvect<3,double> real3;
 
 int main(int argc, char* argv[])
 {
@@ -94,7 +94,7 @@ int main(int argc, char* argv[])
 	/*
 	 * Example of using dimensional analysis with mixed types
 	 */
-	quantity<acceleration,real3> a(1.0,2.0,3.0);
+	quantity<acceleration,real3> a = {1.0,2.0,3.0};
 	quantity<mass> m(1.4);
 	quantity<force,real3> f2 = a*m;
 	cout << "F = " << f2 << endl;
@@ -102,7 +102,7 @@ int main(int argc, char* argv[])
 	// using the less verbose version
 	mass_t<> m2 = 3.4; // unfortunately since mass_t is a template we need to write mass_t<> for the default double.
 	auto m3 = 3.4_mass; // longer but perhaps more readable version using UDL
-	velocity_t<real3> v(1.0,2.0,3.0);
+	velocity_t<real3> v = {1.0,2.0,3.0};
 
 
 	/*
