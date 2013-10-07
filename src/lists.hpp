@@ -2,6 +2,7 @@
 #define LISTS_HPP
 
 #include <iostream>
+#include <type_traits>
 
 /*
  * Structures for forming lists of types and performing operations on the
@@ -192,6 +193,20 @@ namespace lists
 	struct operate<Op,end_element,Rest...> {
 		using result = end_element;
 	};
+
+    /*
+     * Checks whether a type exists in the list.
+     */
+    template<class A, class List>
+    struct exists {
+        static constexpr bool value = std::is_same<A,typename List::value>::value 
+            || exists<A,typename List::tail>::value;
+    };
+
+    template<class A>
+    struct exists<A,end_element> {
+        static constexpr bool value = false;
+    };    
 
 }; // namespace lists
 

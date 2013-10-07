@@ -219,7 +219,7 @@ namespace dims {
 		}
 
 
-	private:
+//	private:
 		T val;
 	};
 
